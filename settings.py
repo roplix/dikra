@@ -19,7 +19,19 @@ def is_prize_value_above_threshold(fields):
             print(f"Checking prize: {prize_text}")
             value = extract_prize_value(prize_text)
             if value is not None:
-                return value > 1  # Check if the value is more than $0.1
+                return value > 1.4  # Check if the value is more than $0.1
+            else:
+                return False  # Return False if extraction failed
+    return False  # Return False if no prize field found or extraction failed
+
+def is_prize_value_above_threshold1(fields):
+    for field in fields:
+        if field.name.lower() == "prize":
+            prize_text = field.value  # Extract prize text from the prize field
+            print(f"Checking prize: {prize_text}")
+            value = extract_prize_value(prize_text)
+            if value is not None:
+                return value > 0.5  # Check if the value is more than $0.1
             else:
                 return False  # Return False if extraction failed
     return False  # Return False if no prize field found or extraction failed
@@ -89,6 +101,30 @@ def is_pool_per_enters_above_threshold(fields):
     
     if pool_value is not None and enters_value is not None and enters_value != 0:
         return pool_value / enters_value >= 0.01
+    else:
+        return False  # Return False if pool or enters values were not found or valid
+
+def is_pool_per_enters_worth_risk(fields):
+    pool_value = None
+    enters_value = None
+    
+    for field in fields:
+        if field.name.lower() == "pool":
+            pool_text = field.value  # Extract pool text from the pool field
+            print(f"Checking pool: {pool_text}")
+            pool_value = extract_prize_value(pool_text)
+            if pool_value is None:
+                return False  # Return False if extraction failed
+        
+        if field.name.lower() == "enters":
+            enters_text = field.value  # Extract enters text from the enters field
+            print(f"Checking enters: {enters_text}")
+            enters_value = extract_enters_value(enters_text)
+            if enters_value is None or enters_value == 0:
+                return False  # Return False if extraction failed or enters is 0
+    
+    if pool_value is not None and enters_value is not None and enters_value != 0:
+        return pool_value / enters_value >= 0.5
     else:
         return False  # Return False if pool or enters values were not found or valid
 
